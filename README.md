@@ -28,6 +28,7 @@ Welcome to the GitHub presence of Khadgakali Secondary School!
 * Email: office@khadgakali.edu.np
 * Website: www.khadgakali.edu.np
 * Facebook: https://facebook.com/khadgakalischool
+* Contact: 9864891366 (Bikas Gurung, Computer Teacher (www.bikasgurung.com.np)
 
 ### 😄 Pronouns:
 
