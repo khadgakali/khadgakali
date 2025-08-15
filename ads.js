@@ -1,47 +1,155 @@
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'016a00269030c3c3fdecdafbfaca0eeb\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/016a00269030c3c3fdecdafbfaca0eeb/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '016a00269030c3c3fdecdafbfaca0eeb',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/016a00269030c3c3fdecdafbfaca0eeb/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'1ec12885c6277097c5861b7c2740b2a1\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/1ec12885c6277097c5861b7c2740b2a1/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '1ec12885c6277097c5861b7c2740b2a1',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/1ec12885c6277097c5861b7c2740b2a1/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'9d4b89d5cbcaa1b19d907abbf60e5119\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/9d4b89d5cbcaa1b19d907abbf60e5119/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '9d4b89d5cbcaa1b19d907abbf60e5119',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/9d4b89d5cbcaa1b19d907abbf60e5119/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'373cc5c6f517c18407ef041b259c7957\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/373cc5c6f517c18407ef041b259c7957/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '373cc5c6f517c18407ef041b259c7957',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/373cc5c6f517c18407ef041b259c7957/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'00d40dd8961eefbe7ad3ace47e3ddae6\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/00d40dd8961eefbe7ad3ace47e3ddae6/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '00d40dd8961eefbe7ad3ace47e3ddae6',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/00d40dd8961eefbe7ad3ace47e3ddae6/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'fdcb1ec53cb933f1ef28dbe66d9ba1bd\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/fdcb1ec53cb933f1ef28dbe66d9ba1bd/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : 'fdcb1ec53cb933f1ef28dbe66d9ba1bd',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/fdcb1ec53cb933f1ef28dbe66d9ba1bd/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'d71dd54649a72db6b6f0a9abec7ccc6e\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/d71dd54649a72db6b6f0a9abec7ccc6e/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : 'd71dd54649a72db6b6f0a9abec7ccc6e',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/d71dd54649a72db6b6f0a9abec7ccc6e/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'507c46e8f716a21d987fae5b4eb29bac\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/507c46e8f716a21d987fae5b4eb29bac/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '507c46e8f716a21d987fae5b4eb29bac',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/507c46e8f716a21d987fae5b4eb29bac/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'7d4d7b751cbafba0825ef51a60a603d3\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/7d4d7b751cbafba0825ef51a60a603d3/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '7d4d7b751cbafba0825ef51a60a603d3',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/7d4d7b751cbafba0825ef51a60a603d3/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'557bde13d9cfbf1e61649456c5b0c8e6\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/557bde13d9cfbf1e61649456c5b0c8e6/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '557bde13d9cfbf1e61649456c5b0c8e6',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/557bde13d9cfbf1e61649456c5b0c8e6/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'7d4d7b751cbafba0825ef51a60a603d3\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, \'params\' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/7d4d7b751cbafba0825ef51a60a603d3/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '7d4d7b751cbafba0825ef51a60a603d3',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/7d4d7b751cbafba0825ef51a60a603d3/invoke.js"></script>
+`);
 
-document.write('<div class="ad-unit">');
-document.write('<script type="text/javascript"> atOptions = { \'key\' : \'5c64d1449c495bf7fd633e2db781e60b\', \'format\' : \'iframe\', \'height\' : 90, \'width\' : 728, 'params' : {} }; </script> <script type="text/javascript" src="//detachteethsolitude.com/5c64d1449c495bf7fd633e2db781e60b/invoke.js"></script>');
-document.write('</div>');
+document.write(`
+<script type="text/javascript">
+    atOptions = {
+        'key' : '5c64d1449c495bf7fd633e2db781e60b',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+    };
+</script>
+<script type="text/javascript" src="//detachteethsolitude.com/5c64d1449c495bf7fd633e2db781e60b/invoke.js"></script>
+`);
