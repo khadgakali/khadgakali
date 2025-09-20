@@ -1,1 +1,52 @@
-hello
+Kanchanjangha	Mansalu	Machhapuchhre	Annapurna
+Class 1	Class 1	Class 1	Class 1
+Pawan B.K.	Aashush Khand	Pratik Thapa	Samyog Khand
+Prayush Saru			
+Class 2	Class 2	Class 2	Class 2
+Anurag Kaﬂe	Sanisha Shalmi	Ayuf Pratap Khand	Saroj B.K.
+Anamol Malla			
+Class 3	Class 3	Class 3	Class 3
+Ikshya Malla	Bishwas B.K.	Dipshikha Pariyar	Dipsan Shahi
+Barsha Khand	Sujan Khand	Nispal Khand	Krishna Thapa
+	Sandipa Shahi		
+Class 4	Class 4	Class 4	Class 4
+Subarna Thapa	Bishow Gurung	Andipa Pariyar	Chandrakala B.K.
+Dhanraj Guurng	Denisha Thapa	Babin Gurung	Gausham Khand
+Sajita Kunwar	Anushka Malla	Shiva Thapa	Sangam Gurung
+		Krishna Pariyar	Shrena Thapa
+Class 5	Class 5	Class 5	Class 5
+Rahul Giri	Bikram B.C.	Dibas Khand	Sagar Gurung
+Anamol Khand	Dol Bahadur Rana	Ridam Gurung	Namiska Poudel
+Asmita Kunwar	Purnima B.C.	Roshani Khand	Sima Kshetri
+	Priyanka Malla		
+Class 6	Class 6	Class 6	Class 6
+Abisna Khand	Shristi B.C.	Anupam Poudel	Sudip B.K.
+Sajit Kunwar	Safal Pariyar	Saskriti Saru	Roshani Poudel
+Asmit Saru	Naman Khand	Hom Bahadur Chhetri	Binita Gurung
+Shishir Singh Thakuri		Apsan Subedi	Subina Chhetri
+Class 7	Class 7	Class 7	Class 7
+Ranjit Pariyar	Rohit Pulami	Utsab Khand	Sushil Khand
+Rijan Chhetri	Bishum Khand	Sushanta Kshetri	Dipsan Thapa
+Dil Bahadur Thapa	Santoshi Khand	Amrit Poudel	Apsan Malla
+Ishwari Chhetri	Salani Khand Thakuri	Bhuwan Thapa	Prasanna Khand
+Aayush Gurung		Pushpalal B.K.	Surya B.C.
+Class 8	Class 8	Class 8	Class 8
+Khusbu Gurung	Chuni Maya Gurung	Salina K.C.	Melina Sarki
+Arosh Thapa	Sujina Khand	Saya Gurung	Bishnu Gurung
+Sanjog Pariyar	Preeti Thapa	Binod Khand	Kamala B.K.
+Rim Bahadur Kunwar	Khim Bahadur Nepali	Lokendra Saru	Sodima Saru
+Dan Bahadur Khand	Sangam Khand	Gaurab Khand	Yubraj Gurung
+Ti Maya Nepali		Utsab Khand	Sangam B.K.
+Class 9	Class 9	Class 9	Class 9
+Aayushma Gurung	Ishmi Malla	Nishma Gurung	Rohan Pulami
+Pari Chhetri	Bibisha Poudel	Roshan Chhetri	Hira Bahadur Thapa
+Anjita Khand	Sonam Thapa	Bibek Saru	Bikas Gurung
+Samrat Singh Thakuri	Sahil Saru	Sabina Gurung	Spandan Khand
+Nischal B.C.			
+Class 10	Class 10	Class 10	Class 10
+Binita Gurung	Nomiska Gurung	Aliza Rana	Puja Gurung
+Puja Thapa	Namrata Khand	Bipana B.C.	Bibisha Khand
+Apsana Khand	Himani Khand	Diya Khand	Apsara Thapa
+Sabina Ranpal	Bishnu Malla	Srijana Poudel	Pawan Poudel
+Diwan Ranpal	Sangam K.C.	Madan Chhetri	Asmit Poudel
+Anish Chhetri			Bibas Gurung
