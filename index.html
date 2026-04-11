@@ -1,124 +1,61 @@
+---
+layout: null
+---
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Index of / - git.khadgakali.edu.np</title>
+    <title>Index of / - Hotlink Manager</title>
     <style>
-        body { font-family: monospace; background: #fff; padding: 20px; color: #333; }
+        body { font-family: monospace; padding: 30px; background: #fff; }
         .breadcrumb { font-weight: bold; margin-bottom: 20px; font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-        .breadcrumb a { color: blue; text-decoration: none; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; border-bottom: 1px solid #000; padding: 10px; }
         td { padding: 8px 10px; border-bottom: 1px solid #eee; }
-        .folder { font-weight: bold; color: #0000ee; cursor: pointer; }
-        .file { color: #555; text-decoration: none; }
-        .file:hover { text-decoration: underline; color: blue; }
-        .copy-btn { background: #eee; border: 1px solid #ccc; padding: 2px 8px; cursor: pointer; font-size: 11px; margin-left: 10px; border-radius: 3px; }
-        .copy-btn:hover { background: #ddd; }
+        .copy-btn { background: #0056b3; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 3px; font-size: 10px; }
+        .file-link { color: #0000ee; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div id="breadcrumb" class="breadcrumb">Index of /</div>
+    <div class="breadcrumb">Index of / (Build-time Listing)</div>
 
     <table>
         <thead>
             <tr>
-                <th>Name</th>
-                <th style="text-align:right">Action</th>
+                <th>File Name</th>
+                <th style="text-align:right">Hotlink Action</th>
             </tr>
         </thead>
-        <tbody id="listing"></tbody>
+        <tbody>
+            {% for file in site.static_files %}
+            <tr>
+                <td>
+                    <a href="{{ site.baseurl }}{{ file.path }}" class="file-link">
+                        📄 {{ file.path | remove_first: "/" }}
+                    </a>
+                </td>
+                <td style="text-align:right">
+                    <button class="copy-btn" onclick="copyHotlink('https://git.khadgakali.edu.np{{ file.path }}', this)">
+                        Copy Hotlink
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
-<script>
-    const BASE_URL = window.location.origin;
-    let allFiles = [];
-
-    async function init() {
-        try {
-            const resp = await fetch('./files.json?t=' + Date.now());
-            allFiles = await resp.json();
-            render("");
-        } catch (e) {
-            document.getElementById('listing').innerHTML = "<tr><td>Waiting for GitHub Action to generate file list...</td></tr>";
+    <script>
+        function copyHotlink(url, btn) {
+            navigator.clipboard.writeText(url);
+            const original = btn.innerText;
+            btn.innerText = "COPIED!";
+            btn.style.background = "#28a745";
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.style.background = "#0056b3";
+            }, 1500);
         }
-    }
-
-    function render(currentDir) {
-        const listing = document.getElementById('listing');
-        const breadcrumb = document.getElementById('breadcrumb');
-        listing.innerHTML = "";
-
-        // Update Breadcrumb
-        let breadHTML = `<a href="javascript:render('')">root</a> / `;
-        let pathAcc = "";
-        currentDir.split('/').filter(x => x).forEach(part => {
-            pathAcc += (pathAcc ? '/' : '') + part;
-            breadHTML += `<a href="javascript:render('${pathAcc}')">${part}</a> / `;
-        });
-        breadcrumb.innerHTML = breadHTML;
-
-        // Parent Directory Link
-        if (currentDir !== "") {
-            const parent = currentDir.split('/').slice(0, -1).join('/');
-            addTr(".. [ Parent Directory ]", () => render(parent), true);
-        }
-
-        // Get items in current level
-        const items = new Set();
-        allFiles.forEach(path => {
-            if (path.startsWith(currentDir)) {
-                const relative = currentDir ? path.substring(currentDir.length + 1) : path;
-                const parts = relative.split('/');
-                items.add(parts[0] + (parts.length > 1 ? '///dir' : '///file'));
-            }
-        });
-
-        // Sort and Render
-        const sortedItems = Array.from(items).sort();
-        sortedItems.forEach(itemStr => {
-            const [name, type] = itemStr.split('///');
-            const fullPath = currentDir ? `${currentDir}/${name}` : name;
-            
-            if (type === 'dir') {
-                addTr("📁 " + name + "/", () => render(fullPath), true);
-            } else {
-                const hotlink = `${BASE_URL}/${fullPath}`;
-                addTr("📄 " + name, () => window.open(hotlink, '_blank'), false, hotlink);
-            }
-        });
-    }
-
-    function addTr(name, action, isDir, hotlink = null) {
-        const tr = document.createElement('tr');
-        const nameTd = document.createElement('td');
-        const link = document.createElement('a');
-        link.className = isDir ? 'folder' : 'file';
-        link.innerText = name;
-        link.onclick = action;
-        nameTd.appendChild(link);
-
-        const actionTd = document.createElement('td');
-        actionTd.style.textAlign = "right";
-        if (hotlink) {
-            const btn = document.createElement('button');
-            btn.className = 'copy-btn';
-            btn.innerText = "Copy Hotlink";
-            btn.onclick = () => {
-                navigator.clipboard.writeText(hotlink);
-                btn.innerText = "Copied!";
-                setTimeout(() => btn.innerText = "Copy Hotlink", 2000);
-            };
-            actionTd.appendChild(btn);
-        }
-
-        tr.appendChild(nameTd);
-        tr.appendChild(actionTd);
-        document.getElementById('listing').appendChild(tr);
-    }
-
-    init();
-</script>
+    </script>
 </body>
 </html>
