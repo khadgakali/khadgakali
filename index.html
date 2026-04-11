@@ -1,1 +1,132 @@
-<p> Hello world </p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index of /</title>
+    <style>
+        body { font-family: "Courier New", Courier, monospace; background: #fff; color: #000; padding: 20px; }
+        h1 { font-size: 1.5em; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .breadcrumb { margin-bottom: 20px; font-weight: bold; }
+        .breadcrumb a { color: blue; text-decoration: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; border-bottom: 1px solid #000; padding: 8px; }
+        td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+        .folder { font-weight: bold; color: #0000ee; }
+        .file { color: #333; }
+        .size { text-align: right; color: #666; font-size: 0.9em; }
+        a { text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .error-msg { color: white; background: red; padding: 10px; display: none; margin-bottom: 10px; }
+        footer { margin-top: 30px; border-top: 1px solid #ccc; padding-top: 10px; font-size: 0.8em; color: #777; }
+    </style>
+</head>
+<body>
+
+    <div id="error-box" class="error-msg"></div>
+    <h1 id="title">Index of /</h1>
+    <div id="breadcrumb" class="breadcrumb"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th style="text-align:right">Size</th>
+                <th style="text-align:right">Type</th>
+            </tr>
+        </thead>
+        <tbody id="listing">
+            <tr><td colspan="3">Initializing connection to storage...</td></tr>
+        </tbody>
+    </table>
+
+    <footer>
+        Static File Server / 1.0.1 (Khadga Kali Edition)
+    </footer>
+
+<script>
+    // --- CONFIGURATION ---
+    const USER = 'khadgakali';
+    // This helper automatically finds the repo name from your GitHub Pages URL
+    const REPO = window.location.hostname.split('.')[0] === 'git' ? 'git' : window.location.pathname.split('/')[1];
+
+    async function navigate(path = "") {
+        const listing = document.getElementById('listing');
+        const errorBox = document.getElementById('error-box');
+        const breadcrumb = document.getElementById('breadcrumb');
+        
+        errorBox.style.display = 'none';
+        listing.innerHTML = '<tr><td colspan="3">Reading directory...</td></tr>';
+
+        // Update Breadcrumbs
+        const parts = path.split('/').filter(p => p);
+        let breadHTML = '<a href="javascript:navigate(\'\')">root</a> / ';
+        let currentAccumulatedPath = '';
+        parts.forEach((p, i) => {
+            currentAccumulatedPath += (i === 0 ? '' : '/') + p;
+            breadHTML += `<a href="javascript:navigate('${currentAccumulatedPath}')">${p}</a> / `;
+        });
+        breadcrumb.innerHTML = breadHTML;
+
+        try {
+            const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${path}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                if(response.status === 403) throw new Error("API Rate Limit Exceeded. Please try again in an hour.");
+                throw new Error("Could not find directory.");
+            }
+
+            const items = await response.json();
+            listing.innerHTML = '';
+
+            // Add Parent Directory link
+            if (path !== "") {
+                const parentPath = parts.slice(0, -1).join('/');
+                const row = listing.insertRow();
+                row.innerHTML = `<td colspan="3"><a href="javascript:navigate('${parentPath}')">.. [ Parent Directory ]</a></td>`;
+            }
+
+            // Sort Folders first
+            items.sort((a, b) => (a.type === b.type ? 0 : a.type === 'dir' ? -1 : 1));
+
+            items.forEach(item => {
+                // Ignore index.html and 404.html to keep it looking like a server
+                if (item.name === 'index.html' || item.name === '404.html' || item.name === '.nojekyll') return;
+
+                const row = listing.insertRow();
+                const isDir = item.type === 'dir';
+                const displayName = isDir ? item.name + '/' : item.name;
+                const displaySize = isDir ? '-' : formatBytes(item.size);
+                
+                // Clicking a folder navigates inside; clicking a file opens it
+                const action = isDir 
+                    ? `javascript:navigate('${item.path}')` 
+                    : item.download_url;
+
+                row.innerHTML = `
+                    <td><a href="${action}" class="${isDir ? 'folder' : 'file'}">${isDir ? '📁' : '📄'} ${displayName}</a></td>
+                    <td class="size">${displaySize}</td>
+                    <td style="text-align:right; font-size:0.8em">${item.type}</td>
+                `;
+            });
+
+        } catch (err) {
+            errorBox.innerText = err.message;
+            errorBox.style.display = 'block';
+            listing.innerHTML = '<tr><td colspan="3">Directory listing failed.</td></tr>';
+        }
+    }
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB', 'GB'][i];
+    }
+
+    // Start at root
+    navigate("");
+</script>
+</body>
+</html>
+
