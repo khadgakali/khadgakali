@@ -1,0 +1,29 @@
+name: Generate File List
+on: [push] # Runs every time you upload/change a file
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate JSON
+        run: |
+          # This script finds all files (excluding hidden ones and the script itself)
+          # and formats them into a JSON array.
+          echo "[" > files.json
+          find . -maxdepth 3 -not -path '*/.*' -type f -not -name "files.json" -not -name "list_files.yml" | sed 's|^\./||' | while read line; do
+            echo "  {\"name\": \"$(basename "$line")\", \"path\": \"$line\"}," >> files.json
+          done
+          # Remove trailing comma from last line and close bracket
+          sed -i '$ s/,$//' files.json
+          echo "]" >> files.json
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add files.json
+          git commit -m "Auto-update file list" || exit 0
+          git push
