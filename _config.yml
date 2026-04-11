@@ -1,0 +1,2 @@
+include: ["photos", "assets"] # Add any top-level folders you want to browse
+remote_theme: jekyll/minima # Or any theme you like
