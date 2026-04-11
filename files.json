@@ -1,0 +1,5 @@
+[
+  {"name": "logo.png", "path": "images/logo.png", "type": "file"},
+  {"name": "document.pdf", "path": "docs/document.pdf", "type": "file"},
+  {"name": "header-bg.jpg", "path": "assets/header-bg.jpg", "type": "file"}
+]
