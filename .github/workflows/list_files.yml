@@ -1,6 +1,5 @@
-name: Generate File List
-on: [push] # Runs every time you upload/change a file
-
+name: Generate Deep File List
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -8,22 +7,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Generate JSON
+      - name: Generate JSON Map
         run: |
-          # This script finds all files (excluding hidden ones and the script itself)
-          # and formats them into a JSON array.
+          # This finds all files, excluding hidden folders and system files
+          # It creates a JSON array of paths
           echo "[" > files.json
-          find . -maxdepth 3 -not -path '*/.*' -type f -not -name "files.json" -not -name "list_files.yml" | sed 's|^\./||' | while read line; do
-            echo "  {\"name\": \"$(basename "$line")\", \"path\": \"$line\"}," >> files.json
+          find . -type f -not -path '*/.*' -not -name "files.json" -not -name "index.html" -not -name "404.html" -not -name "CNAME" | sed 's|^\./||' | while read line; do
+            echo "  \"$line\"," >> files.json
           done
-          # Remove trailing comma from last line and close bracket
           sed -i '$ s/,$//' files.json
           echo "]" >> files.json
 
-      - name: Commit and Push
+      - name: Commit changes
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          git config --global user.name "Link-Bot"
+          git config --global user.email "bot@khadgakali.edu.np"
           git add files.json
-          git commit -m "Auto-update file list" || exit 0
+          git commit -m "Updated file index" || exit 0
           git push
