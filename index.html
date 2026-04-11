@@ -2,175 +2,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index of /</title>
+    <title>Index of / - Hotlink Manager</title>
     <style>
-        :root {
-            --bg: #ffffff;
-            --text: #000000;
-            --link: #0000ee;
-            --border: #cccccc;
-        }
-        body { 
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
-            background: var(--bg); 
-            color: var(--text); 
-            padding: 25px; 
-            line-height: 1.4;
-            margin: 0;
-        }
-        .container { max-width: 1000px; margin: 0 auto; }
-        h1 { font-size: 1.5rem; margin: 0 0 10px 0; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; background: #f4f7f9; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.2rem; color: #0056b3; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         
-        .breadcrumb { margin-bottom: 20px; padding: 5px 0; border-bottom: 1px solid var(--border); }
-        .breadcrumb a { color: var(--link); text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb { margin: 10px 0; font-size: 0.9rem; }
+        .breadcrumb a { color: #0056b3; text-decoration: none; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; border-bottom: 1px solid #000; padding: 10px 5px; font-weight: bold; }
-        td { padding: 8px 5px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
-        
-        .name-col { width: 60%; }
-        .size-col { width: 20%; text-align: right; }
-        .date-col { width: 20%; text-align: right; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; background: #f8f9fa; padding: 12px; border-bottom: 2px solid #dee2e6; }
+        td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
 
-        a { color: var(--link); text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        .name-link { text-decoration: none; color: #000; font-weight: 500; display: flex; align-items: center; }
+        .name-link:hover { color: #0056b3; }
+        
+        .copy-btn { 
+            background: #28a745; color: white; border: none; padding: 5px 10px; 
+            border-radius: 4px; cursor: pointer; font-size: 0.75rem; transition: 0.2s;
+        }
+        .copy-btn:hover { background: #218838; }
+        .copy-btn.copied { background: #6c757d; }
 
-        .icon { margin-right: 8px; opacity: 0.7; }
-        .error-message { 
-            background: #fff0f0; 
-            color: #d12d2d; 
-            padding: 15px; 
-            border: 1px solid #d12d2d; 
-            margin-bottom: 20px; 
-            display: none; 
-            font-size: 14px;
-        }
-        
-        footer { margin-top: 40px; font-size: 12px; color: #888; border-top: 1px solid var(--border); padding-top: 10px; }
-        
-        @media (max-width: 600px) {
-            .date-col { display: none; }
-            body { padding: 15px; }
-        }
+        .icon { margin-right: 10px; font-size: 1.2rem; }
+        footer { margin-top: 20px; font-size: 0.8rem; color: #888; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="error-display" class="error-message"></div>
-    
-    <h1 id="dir-title">Index of /</h1>
+    <h1>File Directory & Hotlink Generator</h1>
     <div id="breadcrumb" class="breadcrumb"></div>
 
     <table>
         <thead>
             <tr>
-                <th class="name-col">Name</th>
-                <th class="size-col">Size</th>
-                <th class="date-col">Description</th>
+                <th>Name</th>
+                <th style="width: 120px;">Actions</th>
             </tr>
         </thead>
         <tbody id="listing">
-            <tr><td colspan="3">Loading file system...</td></tr>
+            <tr><td colspan="2">Loading files...</td></tr>
         </tbody>
     </table>
-
-    <footer>
-        GitHub Static Explorer/2.0 (git.khadgakali.edu.np)
-    </footer>
+    <footer>git.khadgakali.edu.np</footer>
 </div>
 
 <script>
-    // --- MANDATORY CONFIGURATION ---
     const CONFIG = {
         username: 'khadgakali',
-        repo: 'git', // The repo name must match exactly what is on GitHub
-        branch: 'main' // Change to 'master' if your repo uses the old default
+        repo: 'git',
+        // The base URL of your live website
+        baseUrl: 'https://git.khadgakali.edu.np'
     };
 
-    async function listDirectory(path = "") {
+    async function loadDir(path = "") {
         const listing = document.getElementById('listing');
-        const errorDisplay = document.getElementById('error-display');
         const breadcrumb = document.getElementById('breadcrumb');
-        const dirTitle = document.getElementById('dir-title');
-
-        errorDisplay.style.display = 'none';
-        dirTitle.innerText = `Index of /${path}`;
-
-        // Update Breadcrumbs
-        let breadHTML = '<a href="javascript:listDirectory(\'\')">root</a>';
-        let currentPath = '';
+        
+        // Update Breadcrumb
+        let breadHTML = `<a href="javascript:loadDir('')">root</a>`;
         if (path) {
-            const parts = path.split('/');
-            parts.forEach((part) => {
-                currentPath += (currentPath ? '/' : '') + part;
-                breadHTML += ` / <a href="javascript:listDirectory('${currentPath}')">${part}</a>`;
+            let acc = "";
+            path.split('/').forEach(p => {
+                acc += (acc ? '/' : '') + p;
+                breadHTML += ` / <a href="javascript:loadDir('${acc}')">${p}</a>`;
             });
         }
         breadcrumb.innerHTML = breadHTML;
 
         try {
-            const apiURL = `https://api.github.com/repos/${CONFIG.username}/${CONFIG.repo}/contents/${path}`;
-            const response = await fetch(apiURL);
+            const res = await fetch(`https://api.github.com/repos/${CONFIG.username}/${CONFIG.repo}/contents/${path}`);
+            const items = await res.json();
+            
+            listing.innerHTML = "";
 
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || "Failed to fetch directory contents.");
-            }
-
-            const items = await response.json();
-            listing.innerHTML = '';
-
-            // Add Parent Directory link
-            if (path !== "") {
-                const parentPath = path.split('/').slice(0, -1).join('/');
+            // Parent dir link
+            if (path) {
+                const parent = path.split('/').slice(0, -1).join('/');
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td colspan="3"><a href="javascript:listDirectory('${parentPath}')">📂 .. (Parent Directory)</a></td>`;
+                tr.innerHTML = `<td colspan="2"><a href="javascript:loadDir('${parent}')" style="text-decoration:none">⤴️ .. (Up)</a></td>`;
                 listing.appendChild(tr);
             }
 
-            // Sort: Directories first, then files
-            items.sort((a, b) => (a.type === b.type ? a.name.localeCompare(b.name) : a.type === 'dir' ? -1 : 1));
+            items.sort((a,b) => (a.type === b.type ? 0 : a.type === 'dir' ? -1 : 1));
 
             items.forEach(item => {
-                // Hide system files
                 if (['index.html', '404.html', '.nojekyll', 'CNAME'].includes(item.name)) return;
 
-                const tr = document.createElement('tr');
                 const isDir = item.type === 'dir';
-                const icon = isDir ? '📁' : '📄';
+                const hotlink = `${CONFIG.baseUrl}/${item.path}`;
                 
-                // Link logic: folders call JS, files go to raw view
-                const link = isDir 
-                    ? `javascript:listDirectory('${item.path}')` 
-                    : `https://raw.githubusercontent.com/${CONFIG.username}/${CONFIG.repo}/${CONFIG.branch}/${item.path}`;
-
+                const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="name-col"><span class="icon">${icon}</span><a href="${link}">${item.name}${isDir ? '/' : ''}</a></td>
-                    <td class="size-col">${isDir ? '-' : formatSize(item.size)}</td>
-                    <td class="date-col">${isDir ? 'Directory' : 'File'}</td>
+                    <td>
+                        <a class="name-link" href="${isDir ? `javascript:loadDir('${item.path}')` : hotlink}" target="${isDir ? '_self' : '_blank'}">
+                            <span class="icon">${isDir ? '📁' : '📄'}</span> ${item.name}
+                        </a>
+                    </td>
+                    <td>
+                        ${!isDir ? `<button class="copy-btn" onclick="copyLink('${hotlink}', this)">Copy Hotlink</button>` : ''}
+                    </td>
                 `;
                 listing.appendChild(tr);
             });
-
-        } catch (err) {
-            errorDisplay.innerText = "Error: " + err.message;
-            errorDisplay.style.display = 'block';
-            listing.innerHTML = '<tr><td colspan="3">Listing failed. Check if repository name is correct.</td></tr>';
+        } catch (e) {
+            listing.innerHTML = "<tr><td colspan='2' style='color:red'>Error loading directory.</td></tr>";
         }
     }
 
-    function formatSize(bytes) {
-        if (bytes === 0) return '0 B';
-        const k = 1024;
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB', 'GB'][i];
+    function copyLink(url, btn) {
+        navigator.clipboard.writeText(url).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = "Copied!";
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
     }
 
-    // Initial load
-    listDirectory("");
+    loadDir("");
 </script>
 
 </body>
