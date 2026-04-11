@@ -4,78 +4,121 @@
     <meta charset="UTF-8">
     <title>Index of / - git.khadgakali.edu.np</title>
     <style>
-        body { font-family: monospace; background: #fff; padding: 20px; color: #000; }
-        .header { border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
+        body { font-family: monospace; background: #fff; padding: 20px; color: #333; }
+        .breadcrumb { font-weight: bold; margin-bottom: 20px; font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .breadcrumb a { color: blue; text-decoration: none; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; border-bottom: 1px solid #000; padding: 10px; }
         td { padding: 8px 10px; border-bottom: 1px solid #eee; }
-        .copy-link { 
-            color: #0000ee; cursor: pointer; text-decoration: underline; 
-            font-size: 0.8em; margin-left: 15px; 
-        }
-        .file-name { text-decoration: none; color: #000; font-weight: bold; }
-        .file-name:hover { color: #0000ee; }
-        #status { color: #666; font-style: italic; }
+        .folder { font-weight: bold; color: #0000ee; cursor: pointer; }
+        .file { color: #555; text-decoration: none; }
+        .file:hover { text-decoration: underline; color: blue; }
+        .copy-btn { background: #eee; border: 1px solid #ccc; padding: 2px 8px; cursor: pointer; font-size: 11px; margin-left: 10px; border-radius: 3px; }
+        .copy-btn:hover { background: #ddd; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Index of /</h1>
-        <p id="status">Scanning local manifest...</p>
-    </div>
+    <div id="breadcrumb" class="breadcrumb">Index of /</div>
 
     <table>
         <thead>
             <tr>
-                <th>File Name</th>
-                <th>Hotlink</th>
+                <th>Name</th>
+                <th style="text-align:right">Action</th>
             </tr>
         </thead>
-        <tbody id="file-list"></tbody>
+        <tbody id="listing"></tbody>
     </table>
 
 <script>
     const BASE_URL = window.location.origin;
+    let allFiles = [];
 
-    async function loadFiles() {
-        const list = document.getElementById('file-list');
-        const status = document.getElementById('status');
-        
+    async function init() {
         try {
-            // Fetch the auto-generated JSON
-            const response = await fetch('./files.json?t=' + Date.now());
-            if (!response.ok) throw new Error("Manifest not found. Wait for GitHub Action to finish.");
-            
-            const files = await response.json();
-            status.innerText = `Total items found: ${files.length}`;
-            list.innerHTML = "";
-
-            files.forEach(file => {
-                const hotlink = `${BASE_URL}/${file.path}`;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>
-                        <a href="${hotlink}" class="file-name" target="_blank">📄 ${file.name}</a>
-                    </td>
-                    <td>
-                        <code style="background:#eee;padding:2px 5px;">${hotlink}</code>
-                        <span class="copy-link" onclick="copyText('${hotlink}')">[Copy]</span>
-                    </td>
-                `;
-                list.appendChild(tr);
-            });
+            const resp = await fetch('./files.json?t=' + Date.now());
+            allFiles = await resp.json();
+            render("");
         } catch (e) {
-            status.innerHTML = `<span style="color:red">Error: ${e.message}</span>`;
+            document.getElementById('listing').innerHTML = "<tr><td>Waiting for GitHub Action to generate file list...</td></tr>";
         }
     }
 
-    function copyText(text) {
-        navigator.clipboard.writeText(text);
-        alert("Hotlink copied to clipboard!");
+    function render(currentDir) {
+        const listing = document.getElementById('listing');
+        const breadcrumb = document.getElementById('breadcrumb');
+        listing.innerHTML = "";
+
+        // Update Breadcrumb
+        let breadHTML = `<a href="javascript:render('')">root</a> / `;
+        let pathAcc = "";
+        currentDir.split('/').filter(x => x).forEach(part => {
+            pathAcc += (pathAcc ? '/' : '') + part;
+            breadHTML += `<a href="javascript:render('${pathAcc}')">${part}</a> / `;
+        });
+        breadcrumb.innerHTML = breadHTML;
+
+        // Parent Directory Link
+        if (currentDir !== "") {
+            const parent = currentDir.split('/').slice(0, -1).join('/');
+            addTr(".. [ Parent Directory ]", () => render(parent), true);
+        }
+
+        // Get items in current level
+        const items = new Set();
+        allFiles.forEach(path => {
+            if (path.startsWith(currentDir)) {
+                const relative = currentDir ? path.substring(currentDir.length + 1) : path;
+                const parts = relative.split('/');
+                items.add(parts[0] + (parts.length > 1 ? '///dir' : '///file'));
+            }
+        });
+
+        // Sort and Render
+        const sortedItems = Array.from(items).sort();
+        sortedItems.forEach(itemStr => {
+            const [name, type] = itemStr.split('///');
+            const fullPath = currentDir ? `${currentDir}/${name}` : name;
+            
+            if (type === 'dir') {
+                addTr("📁 " + name + "/", () => render(fullPath), true);
+            } else {
+                const hotlink = `${BASE_URL}/${fullPath}`;
+                addTr("📄 " + name, () => window.open(hotlink, '_blank'), false, hotlink);
+            }
+        });
     }
 
-    loadFiles();
+    function addTr(name, action, isDir, hotlink = null) {
+        const tr = document.createElement('tr');
+        const nameTd = document.createElement('td');
+        const link = document.createElement('a');
+        link.className = isDir ? 'folder' : 'file';
+        link.innerText = name;
+        link.onclick = action;
+        nameTd.appendChild(link);
+
+        const actionTd = document.createElement('td');
+        actionTd.style.textAlign = "right";
+        if (hotlink) {
+            const btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.innerText = "Copy Hotlink";
+            btn.onclick = () => {
+                navigator.clipboard.writeText(hotlink);
+                btn.innerText = "Copied!";
+                setTimeout(() => btn.innerText = "Copy Hotlink", 2000);
+            };
+            actionTd.appendChild(btn);
+        }
+
+        tr.appendChild(nameTd);
+        tr.appendChild(actionTd);
+        document.getElementById('listing').appendChild(tr);
+    }
+
+    init();
 </script>
 </body>
 </html>
