@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Soni Computer Institute — Student Registry</title>
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+/* ─── DESIGN TOKENS ────────────────────────────────────── */
+:root {
+  --navy:      #0f2a4a;
+  --navy-mid:  #163a62;
+  --blue:      #1a6bbf;
+  --blue-lt:   #2e86de;
+  --gold:      #f0a500;
+  --gold-lt:   #ffc640;
+  --cream:     #f7f9fc;
+  --white:     #ffffff;
+  --gray-100:  #eef2f7;
+  --gray-200:  #dde4ee;
+  --gray-400:  #9aaec4;
+  --gray-600:  #5a7296;
+  --gray-800:  #1e3250;
+  --danger:    #d63031;
+  --success:   #00b894;
+  --font-head: 'Georgia', 'Times New Roman', serif;
+  --font-body: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --radius:    8px;
+  --shadow-sm: 0 2px 8px rgba(15,42,74,.10);
+  --shadow-md: 0 6px 24px rgba(15,42,74,.14);
+  --shadow-lg: 0 12px 40px rgba(15,42,74,.18);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--gray-800);
+  min-height: 100vh;
+}
+
+/* ─── HEADER ───────────────────────────────────────────── */
+.sci-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1a4a7a 100%);
+  color: var(--white);
+  text-align: center;
+  padding: 2.5rem 1.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.sci-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 120%, rgba(240,165,0,.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 35% at 80% -20%, rgba(46,134,222,.22) 0%, transparent 65%);
+  pointer-events: none;
+}
+.sci-logo-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 4px 20px rgba(240,165,0,.40), 0 0 0 4px rgba(240,165,0,.15);
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+.sci-logo-ring img { width: 100%; height: 100%; object-fit: cover; }
+.sci-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.6rem, 5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.15;
+  position: relative; z-index: 1;
+  text-shadow: 0 2px 10px rgba(0,0,0,.3);
+}
+.sci-title span { color: var(--gold-lt); }
+.sci-subtitle {
+  margin-top: .5rem;
+  font-size: clamp(.8rem, 2.5vw, 1rem);
+  color: rgba(255,255,255,.78);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  position: relative; z-index: 1;
+}
+.sci-badge {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: .25rem .9rem;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--gold-lt);
+  position: relative; z-index: 1;
+}
+
+/* ─── TOOLBAR ──────────────────────────────────────────── */
+.sci-toolbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: .9rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky; top: 0; z-index: 100;
+}
+.sci-search {
+  flex: 1; min-width: 180px;
+  display: flex; align-items: center; gap: .5rem;
+  background: var(--gray-100);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: .45rem .75rem;
+  transition: border-color .2s;
+}
+.sci-search:focus-within { border-color: var(--blue-lt); }
+.sci-search svg { flex-shrink: 0; color: var(--gray-400); }
+.sci-search input {
+  border: none; background: transparent;
+  font-size: .9rem; color: var(--gray-800);
+  width: 100%; outline: none;
+}
+.sci-admin-badge {
+  display: none; align-items: center; gap: .4rem;
+  background: linear-gradient(90deg, var(--navy), var(--navy-mid));
+  color: var(--gold-lt);
+  font-size: .76rem; font-weight: 600;
+  padding: .35rem .6rem .35rem .85rem;
+  border-radius: 999px;
+  letter-spacing: .05em;
+  flex-shrink: 0;
+}
+.sci-admin-badge.active { display: flex; }
+.sci-admin-badge svg { width: 13px; height: 13px; }
+.admin-logout {
+  display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border: none; border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  color: var(--gold-lt);
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.admin-logout:hover { background: rgba(255,255,255,.22); transform: scale(1.06); }
+.admin-logout svg { width: 12px; height: 12px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .46rem .95rem;
+  font-size: .85rem; font-weight: 600;
+  border-radius: var(--radius);
+  border: none; cursor: pointer;
+  transition: transform .15s, box-shadow .15s, background .2s;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--blue); color: var(--white); box-shadow: 0 2px 8px rgba(26,107,191,.35); }
+.btn-primary:hover { background: var(--blue-lt); box-shadow: 0 4px 14px rgba(26,107,191,.45); }
+.btn-print { background: var(--navy); color: var(--white); box-shadow: 0 2px 8px rgba(15,42,74,.3); }
+.btn-print:hover { background: var(--navy-mid); }
+.btn-login {
+  background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+  color: var(--navy);
+  box-shadow: 0 2px 10px rgba(240,165,0,.35);
+}
+.btn-login:hover { box-shadow: 0 4px 16px rgba(240,165,0,.45); }
+.btn-login.is-active { display: none; }
+.btn svg { width: 15px; height: 15px; }
+
+/* ─── ADMIN LOGIN MODAL ────────────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(15,42,74,.55);
+  backdrop-filter: blur(3px);
+  z-index: 1000;
+  align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.active { display: flex; }
+.login-modal {
+  background: var(--white);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 340px;
+  padding: 2rem 1.75rem 1.75rem;
+  text-align: center;
+  position: relative;
+  animation: modalPop .25s ease;
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: translateY(10px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-close {
+  position: absolute; top: .75rem; right: .75rem;
+  width: 28px; height: 28px;
+  border: none; border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--gray-600);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background .2s;
+}
+.modal-close:hover { background: var(--gray-200); }
+.modal-close svg { width: 14px; height: 14px; }
+.login-icon {
+  width: 56px; height: 56px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  color: var(--gold-lt);
+}
+.login-icon svg { width: 26px; height: 26px; }
+.login-title {
+  font-family: var(--font-head);
+  font-size: 1.4rem;
+  color: var(--navy);
+  margin-bottom: .35rem;
+}
+.login-subtitle {
+  font-size: .85rem;
+  color: var(--gray-600);
+  margin-bottom: 1.4rem;
+  line-height: 1.5;
+}
+.login-field { margin-bottom: .6rem; }
+.login-field input {
+  width: 100%;
+  padding: .75rem 1rem;
+  font-size: .95rem;
+  text-align: center;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: var(--gray-100);
+  outline: none;
+  transition: border-color .2s, background .2s;
+  letter-spacing: .15em;
+}
+.login-field input:focus { border-color: var(--blue-lt); background: var(--white); }
+.login-field input.shake { animation: shake .35s; border-color: var(--danger); }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.login-error {
+  color: var(--danger);
+  font-size: .8rem;
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
+.btn-login-submit {
+  width: 100%;
+  justify-content: center;
+  padding: .7rem 1rem;
+  font-size: .9rem;
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  color: var(--gold-lt);
+  box-shadow: 0 4px 14px rgba(15,42,74,.3);
+}
+.btn-login-submit:hover { box-shadow: 0 6px 20px rgba(15,42,74,.4); }
+
+
+/* ─── STATS BAR ────────────────────────────────────────── */
+.sci-stats {
+  display: flex; flex-wrap: wrap; gap: .75rem;
+  padding: 1rem 1.25rem .5rem;
+  max-width: 1400px; margin: 0 auto;
+}
+.stat-chip {
+  display: flex; align-items: center; gap: .5rem;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: .45rem 1rem;
+  font-size: .82rem;
+  box-shadow: var(--shadow-sm);
+}
+.stat-chip strong { color: var(--blue); font-size: 1.05rem; }
+.stat-chip span { color: var(--gray-600); }
+
+/* ─── MAIN CONTENT ─────────────────────────────────────── */
+.sci-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: .75rem 1.25rem 2.5rem;
+}
+
+/* ─── TABLE WRAPPER ────────────────────────────────────── */
+.table-wrap {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+}
+.table-scroll { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .87rem;
+}
+thead tr {
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 100%);
+  color: var(--white);
+}
+thead th {
+  padding: .85rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+thead th:last-child { border-right: none; }
+thead th.admin-col {
+  background: rgba(240,165,0,.18);
+  color: var(--gold-lt);
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--gray-100);
+  transition: background .15s;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #f0f5fc; }
+tbody tr:nth-child(even) { background: #fafbfd; }
+tbody tr:nth-child(even):hover { background: #edf3fb; }
+
+tbody td {
+  padding: .75rem 1rem;
+  color: var(--gray-800);
+  vertical-align: top;
+}
+tbody td.admin-col { color: var(--navy-mid); background: rgba(240,165,0,.04); }
+tbody td.sn-cell {
+  font-weight: 700;
+  color: var(--blue);
+  font-size: .95rem;
+  width: 56px;
+  text-align: center;
+}
+.name-cell { font-weight: 600; color: var(--navy); }
+.course-tag {
+  display: inline-block;
+  padding: .18rem .6rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--blue), var(--blue-lt));
+  color: var(--white);
+  margin: .1rem .15rem .1rem 0;
+}
+.shift-tag {
+  display: inline-block;
+  padding: .18rem .6rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  background: rgba(15,42,74,.08);
+  color: var(--navy-mid);
+}
+.date-tag {
+  display: inline-block;
+  padding: .18rem .6rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  background: rgba(0,184,148,.12);
+  color: #007a60;
+}
+.admin-col { display: none; }
+.admin-mode .admin-col { display: table-cell; }
+
+/* ─── STATUS ───────────────────────────────────────────── */
+.status-box {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: var(--gray-600);
+}
+.status-box .spinner {
+  width: 42px; height: 42px;
+  border: 4px solid var(--gray-200);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.status-box h3 { color: var(--gray-800); margin-bottom: .4rem; }
+.status-box.error .icon { font-size: 2rem; margin-bottom: .75rem; }
+
+/* ─── TABLE FOOTER ─────────────────────────────────────── */
+.table-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .7rem 1rem;
+  background: var(--gray-100);
+  border-top: 1px solid var(--gray-200);
+  font-size: .8rem;
+  color: var(--gray-600);
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+/* ─── SETUP NOTICE ─────────────────────────────────────── */
+.setup-notice {
+  background: linear-gradient(135deg, #fff8e6, #fff3d0);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  font-size: .88rem;
+  line-height: 1.7;
+}
+.setup-notice strong { color: var(--navy); }
+.setup-notice code {
+  background: rgba(15,42,74,.08);
+  padding: .1rem .35rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: .82rem;
+}
+
+/* ─── RESPONSIVE ───────────────────────────────────────── */
+@media (max-width: 640px) {
+  .sci-toolbar { padding: .65rem .9rem; }
+  .sci-main { padding: .5rem .75rem 2rem; }
+  thead th, tbody td { padding: .6rem .65rem; }
+  .sci-stats { padding: .75rem .9rem .25rem; }
+}
+
+/* ─── PRINT STYLES ─────────────────────────────────────── */
+@media print {
+  body { background: #fff !important; }
+  .sci-toolbar, .sci-stats, .setup-notice,
+  .btn, .sci-passkey-wrap, .table-footer { display: none !important; }
+
+  .sci-header {
+    background: var(--navy) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+    padding: 1rem !important;
+  }
+  .sci-main { padding: 0 !important; max-width: 100% !important; }
+  .table-wrap { box-shadow: none !important; border: none !important; }
+  .table-scroll { overflow: visible !important; }
+
+  table { font-size: .8rem !important; page-break-inside: auto; width: 100% !important; }
+  thead { display: table-header-group; }
+  thead tr {
+    background: var(--navy) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  thead th { color: #fff !important; padding: .5rem .6rem !important; }
+  tbody td { padding: .45rem .6rem !important; }
+  tr { page-break-inside: avoid; page-break-after: auto; }
+
+  .admin-col { display: table-cell !important; }
+  .course-tag, .shift-tag { background: none !important; border: 1px solid #999; color: #000 !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────── -->
+<header class="sci-header">
+  <div class="sci-logo-ring">
+    <img src="https://sonicomputer.edu.np/wp-content/uploads/2021/08/Soni-Computer-Logo.png" alt="Soni Computer Institute Logo" />
+  </div>
+  <h1 class="sci-title"><span>Soni</span> Computer Institute</h1>
+  <p class="sci-subtitle">Shuklagandaki Municipality‑11 Khairenitar, Tanahun</p>
+  <span class="sci-badge">Student Registry</span>
+</header>
+
+<!-- ─── TOOLBAR ────────────────────────────────────── -->
+<div class="sci-toolbar no-print">
+  <div class="sci-search">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="searchBox" placeholder="Search by name, course, address…" oninput="filterTable()" />
+  </div>
+
+  <button class="btn btn-login no-print" id="loginBtn" onclick="openLoginModal()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <span id="loginBtnLabel">Admin Login</span>
+  </button>
+
+  <div class="sci-admin-badge" id="adminBadge">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>
+    ADMIN VIEW
+    <button class="admin-logout" onclick="logoutAdmin()" title="Log out" aria-label="Log out">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+  </div>
+
+  <button class="btn btn-primary no-print" onclick="loadData()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    Refresh
+  </button>
+
+  <button class="btn btn-print no-print" onclick="window.print()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    Print
+  </button>
+</div>
+
+<!-- ─── ADMIN LOGIN MODAL ─────────────────────────────── -->
+<div class="modal-overlay no-print" id="loginOverlay" onclick="if(event.target===this) closeLoginModal()">
+  <div class="login-modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <button class="modal-close" onclick="closeLoginModal()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="login-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h2 id="loginTitle" class="login-title">Admin Login</h2>
+    <p class="login-subtitle">Enter your passkey to access full student records</p>
+    <form id="loginForm" onsubmit="return submitLogin(event)">
+      <div class="login-field">
+        <input type="password" id="loginPasskey" placeholder="Enter passkey" autocomplete="off" />
+      </div>
+      <p class="login-error" id="loginError" style="display:none">Incorrect passkey. Please try again.</p>
+      <button type="submit" class="btn btn-login-submit">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<!-- ─── STATS ───────────────────────────────────────── -->
+<div class="sci-stats no-print" id="statsBar" style="display:none">
+  <div class="stat-chip"><strong id="statTotal">0</strong><span>Total Students</span></div>
+  <div class="stat-chip"><strong id="statFiltered">0</strong><span>Shown</span></div>
+  <div class="stat-chip"><strong id="statLastUpdate">—</strong><span>Last Fetched</span></div>
+</div>
+
+<!-- ─── MAIN ────────────────────────────────────────── -->
+<main class="sci-main">
+
+  <!-- Setup notice (hidden once API URL is configured) -->
+  <div class="setup-notice" id="setupNotice">
+    <strong>⚙️ One-time Setup Required:</strong> Replace the placeholder in the JavaScript below
+    with your Google Apps Script Web App URL.<br>
+    Find the variable: <code>const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';</code>
+    and paste your deployed script URL there. See the included
+    <code>GoogleAppsScript_Code.gs</code> file for the backend script to deploy.
+  </div>
+
+  <!-- Table container -->
+  <div class="table-wrap" id="tableWrap">
+    <div class="status-box" id="statusBox">
+      <div class="spinner"></div>
+      <h3>Loading student data…</h3>
+      <p>Fetching from Google Sheets</p>
+    </div>
+    <div class="table-scroll" id="tableScroll" style="display:none">
+      <table id="dataTable">
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="table-footer" id="tableFooter" style="display:none">
+      <span id="footerInfo"></span>
+      <span style="color:var(--gray-400)">Soni Computer Institute © <span id="footerYear"></span></span>
+    </div>
+  </div>
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  CONFIGURATION
+// ═══════════════════════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyRvOPnRaXWx963Mo_6iPzpV4irequPQLngRSU3s5EOyqh3rUvDShzkTt8jFlL2QVKMEA/exec';
+
+// ═══════════════════════════════════════════════════════════
+//  COLUMN KEYWORD MAP
+//  Each key lists possible words that might appear in the
+//  actual sheet header. Matching is case-insensitive and
+//  checks if the header CONTAINS any of these words.
+// ═══════════════════════════════════════════════════════════
+const COL_KEYWORDS = {
+  name:      ['your name', 'student name', 'full name', 'name'],
+  address:   ['home address', 'address'],
+  gender:    ['gender', 'sex'],
+  dob:       ['date of birth', 'birth date', 'dob', 'born'],
+  father:    ["father's name", 'father name', 'father'],
+  mother:    ["mother's name", 'mother name', 'mother'],
+  parent:    ["parent's name", 'parent name', 'guardian'],
+  contact:   ['contact number', 'contact', 'phone', 'mobile', 'whatsapp'],
+  course:    ['choose course', 'course'],
+  prefShift: ['preferred shift', 'shift'],
+  refer:     ['hear about', 'referral', 'refer', 'source'],
+  admission: ['timestamp'],
+};
+
+// ─── passkey (base64 of 'indra') ───────────────────────────
+const _PK = atob('aW5kcmE=');
+
+// ─── state ─────────────────────────────────────────────────
+let allRows   = [];
+let sheetHdrs = [];   // raw headers from sheet
+let colMap    = {};   // resolved: { name: 'Your Name', address: '...' }
+let isAdmin   = false;
+
+// ═══════════════════════════════════════════════════════════
+//  AUTO-MAP: find best matching sheet header for each field
+// ═══════════════════════════════════════════════════════════
+function buildColMap(headers) {
+  const map = {};
+  const lc  = headers.map(h => h.toLowerCase().trim());
+  const used = new Set(); // header indices already claimed by a field
+
+  for (const [field, keywords] of Object.entries(COL_KEYWORDS)) {
+    let found = -1;
+
+    // Pass 1: exact match against a keyword (unused headers only)
+    for (const kw of keywords) {
+      const idx = lc.findIndex((h, i) => !used.has(i) && h === kw);
+      if (idx !== -1) { found = idx; break; }
+    }
+
+    // Pass 2: substring match (unused headers only)
+    if (found === -1) {
+      for (const kw of keywords) {
+        const idx = lc.findIndex((h, i) => !used.has(i) && h.includes(kw));
+        if (idx !== -1) { found = idx; break; }
+      }
+    }
+
+    if (found !== -1) {
+      map[field] = headers[found];
+      used.add(found);
+    } else {
+      map[field] = null;
+    }
+  }
+  console.log('Column map:', map);   // visible in browser DevTools
+  return map;
+}
+
+// ─── get value from row using resolved map ─────────────────
+function getVal(row, field) {
+  const h = colMap[field];
+  if (!h) return '—';
+  const v = row[h];
+  return (v !== undefined && v !== null && v !== '') ? v : '—';
+}
+
+// ─── format helpers ────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatCourses(raw) {
+  if (!raw || raw === '—') return '<span class="shift-tag">—</span>';
+  return raw.split(/[,;\n]+/).map(c => c.trim()).filter(Boolean)
+    .map(c => `<span class="course-tag">${escHtml(c)}</span>`).join(' ');
+}
+
+function formatDate(raw) {
+  if (!raw || raw === '—') return '—';
+  // Already formatted as yyyy-MM-dd by Apps Script
+  // Show as DD MMM YYYY
+  const d = new Date(raw);
+  if (isNaN(d)) return raw;
+  return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+function formatAdmission(raw) {
+  if (!raw || raw === '—') return '—';
+  // Apps Script formats Timestamp as yy-MM-dd HH:mm:ss — display as-is
+  return raw;
+}
+
+function nowTime() {
+  return new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN LOGIN
+// ═══════════════════════════════════════════════════════════
+function openLoginModal() {
+  document.getElementById('loginOverlay').classList.add('active');
+  document.getElementById('loginError').style.display = 'none';
+  const input = document.getElementById('loginPasskey');
+  input.value = '';
+  input.classList.remove('shake');
+  setTimeout(() => input.focus(), 50);
+}
+
+function closeLoginModal() {
+  document.getElementById('loginOverlay').classList.remove('active');
+}
+
+function submitLogin(evt) {
+  evt.preventDefault();
+  const input = document.getElementById('loginPasskey');
+  const val = input.value;
+
+  if (val === _PK) {
+    isAdmin = true;
+    document.getElementById('adminBadge').classList.add('active');
+    document.getElementById('loginBtn').classList.add('is-active');
+    document.getElementById('dataTable').classList.add('admin-mode');
+    updateFooter();
+    closeLoginModal();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    input.classList.remove('shake');
+    requestAnimationFrame(() => input.classList.add('shake'));
+    input.value = '';
+    input.focus();
+  }
+  return false;
+}
+
+function logoutAdmin() {
+  isAdmin = false;
+  document.getElementById('adminBadge').classList.remove('active');
+  document.getElementById('loginBtn').classList.remove('is-active');
+  document.getElementById('dataTable').classList.remove('admin-mode');
+  updateFooter();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  LOAD DATA
+// ═══════════════════════════════════════════════════════════
+function loadData() {
+  document.getElementById('setupNotice').style.display = 'none';
+  showLoading();
+
+  const url = APPS_SCRIPT_URL + '?_=' + Date.now();
+
+  fetch(url)
+    .then(r => {
+      if (!r.ok) throw new Error('Network error: ' + r.status);
+      return r.text();           // get raw text first
+    })
+    .then(text => {
+      // Strip any JSONP wrapper Google sometimes adds
+      const clean = text.replace(/^[^{]*({[\s\S]*})[^}]*$/, '$1');
+      return JSON.parse(clean);
+    })
+    .then(data => {
+      if (!data.success) throw new Error(data.error || 'Script returned failure');
+      sheetHdrs = data.headers || [];
+      allRows   = data.rows   || [];
+
+      if (sheetHdrs.length === 0) throw new Error('No headers found in sheet. Is the sheet empty?');
+
+      colMap = buildColMap(sheetHdrs);
+      renderTable(allRows);
+
+      document.getElementById('statsBar').style.display   = 'flex';
+      document.getElementById('statTotal').textContent    = allRows.length;
+      document.getElementById('statLastUpdate').textContent = nowTime();
+      document.getElementById('statFiltered').textContent = allRows.length;
+    })
+    .catch(err => {
+      console.error('Load error:', err);
+      showError(err.message);
+    });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER TABLE
+// ═══════════════════════════════════════════════════════════
+function renderTable(rows) {
+  const total  = allRows.length;
+  const thead  = document.getElementById('tableHead');
+  const tbody  = document.getElementById('tableBody');
+
+  // ── Column headers ──────────────────────────────────────
+  const publicCols = ['S.N.', "Student's Name", 'Address', 'Course Type', 'Shift', 'Admission Date'];
+  const adminCols  = ['Gender', 'Date of Birth', "Father's Name", "Mother's Name",
+                      "Parent's Name", 'Contact', 'Refer By'];
+  const allCols    = [...publicCols, ...adminCols];
+  const adminStart = publicCols.length;
+
+  thead.innerHTML = '<tr>' + allCols.map((h, i) => {
+    const cls = i >= adminStart ? 'admin-col' : '';
+    return `<th class="${cls}">${escHtml(h)}</th>`;
+  }).join('') + '</tr>';
+
+  // ── Rows — newest first ─────────────────────────────────
+  const reversed = [...rows].reverse();
+
+  if (!reversed.length) {
+    const span = allCols.length;
+    tbody.innerHTML = `<tr><td colspan="${span}" style="text-align:center;padding:2rem;color:var(--gray-400)">No records found.</td></tr>`;
+  } else {
+    tbody.innerHTML = reversed.map(row => {
+      const absoluteIdx = allRows.indexOf(row);
+      const sn          = total - absoluteIdx;
+
+      const name      = getVal(row, 'name');
+      const address   = getVal(row, 'address');
+      const course    = getVal(row, 'course');
+      const shift     = getVal(row, 'prefShift');
+      const admission = getVal(row, 'admission');
+      const gender    = getVal(row, 'gender');
+      const dob       = getVal(row, 'dob');
+      const father    = getVal(row, 'father');
+      const mother    = getVal(row, 'mother');
+      const parent    = getVal(row, 'parent');
+      const contact   = getVal(row, 'contact');
+      const refer     = getVal(row, 'refer');
+
+      return `<tr>
+        <td class="sn-cell">${sn}</td>
+        <td class="name-cell">${escHtml(name)}</td>
+        <td>${escHtml(address)}</td>
+        <td>${formatCourses(course)}</td>
+        <td><span class="shift-tag">${escHtml(shift)}</span></td>
+        <td><span class="date-tag">${escHtml(formatAdmission(admission))}</span></td>
+        <td class="admin-col">${escHtml(gender)}</td>
+        <td class="admin-col">${escHtml(formatDate(dob))}</td>
+        <td class="admin-col">${escHtml(father)}</td>
+        <td class="admin-col">${escHtml(mother)}</td>
+        <td class="admin-col">${escHtml(parent)}</td>
+        <td class="admin-col">${escHtml(contact)}</td>
+        <td class="admin-col">${escHtml(refer)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('dataTable').classList.toggle('admin-mode', isAdmin);
+  document.getElementById('statusBox').style.display    = 'none';
+  document.getElementById('tableScroll').style.display  = 'block';
+  document.getElementById('tableFooter').style.display  = 'flex';
+  document.getElementById('footerYear').textContent     = new Date().getFullYear();
+  updateFooter(reversed.length);
+}
+
+function updateFooter(shown) {
+  const s = shown !== undefined ? shown : document.querySelectorAll('#tableBody tr').length;
+  document.getElementById('footerInfo').textContent =
+    `Showing ${s} of ${allRows.length} student${allRows.length !== 1 ? 's' : ''}` +
+    (isAdmin ? ' · Admin mode active' : '');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════════════════════════
+function filterTable() {
+  const q = document.getElementById('searchBox').value.trim().toLowerCase();
+  if (!q) {
+    renderTable(allRows);
+    document.getElementById('statFiltered').textContent = allRows.length;
+    return;
+  }
+  const filtered = allRows.filter(row =>
+    Object.values(row).some(v => String(v).toLowerCase().includes(q))
+  );
+  renderTable(filtered);
+  document.getElementById('statFiltered').textContent = filtered.length;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  STATUS HELPERS
+// ═══════════════════════════════════════════════════════════
+function showLoading() {
+  document.getElementById('statusBox').className = 'status-box';
+  document.getElementById('statusBox').innerHTML = `
+    <div class="spinner"></div>
+    <h3>Loading student data…</h3>
+    <p>Fetching from Google Sheets</p>`;
+  document.getElementById('statusBox').style.display   = 'block';
+  document.getElementById('tableScroll').style.display = 'none';
+  document.getElementById('tableFooter').style.display = 'none';
+}
+
+function showError(msg) {
+  document.getElementById('statusBox').className = 'status-box error';
+  document.getElementById('statusBox').innerHTML = `
+    <div class="icon">⚠️</div>
+    <h3>Could not load data</h3>
+    <p style="max-width:460px;margin:.5rem auto 1rem;font-size:.85rem">${escHtml(msg)}</p>
+    <button class="btn btn-primary" onclick="loadData()">Try Again</button>`;
+  document.getElementById('statusBox').style.display   = 'block';
+  document.getElementById('tableScroll').style.display = 'none';
+  document.getElementById('tableFooter').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+window.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>
